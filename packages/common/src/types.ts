@@ -1,13 +1,15 @@
 import {  z } from "zod";
+// const { z } = require("zod")
 
 export const UserSchema = z.object({
-    username : z.string().min(3).max(20),
+    email: z.string(),
     password : z.string(),
-    name : z.string()
+    name : z.string(),
+    avatar: z.string()
 })
 
 export const SigninSchema = z.object({
-    username : z.string(),
+    email : z.string(),
     password : z.string()
 })
 
