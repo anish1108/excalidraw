@@ -37,6 +37,7 @@ wss.on("connection", function connection(ws, request){
 
 
     ws.on("message", function message(data){
+        console.log(users)
         let parsedData; 
         if(typeof(data) !== "string"){
             parsedData = JSON.parse(data.toString());
@@ -56,12 +57,37 @@ wss.on("connection", function connection(ws, request){
             user.room.push(parsedData.roomId) ;
         }
 
-        if(parsedData.type == "chat"){
+        if(parsedData.type === "leave_room"){
+            const user = users.find(x=>x.ws === ws);
+            const roomId = parsedData.roomId;
+            if(user){
+                user.room = user.room.filter(id => id !== roomId);
+                console.log(`user ${user.userId} left room ${roomId}`)
+            }else{
+                console.log("User not found")
+            }
+        }
+
+        if(parsedData.type == "chat_room"){
             users.forEach(user => {
                 if(user.room.includes(parsedData.roomId)){
                     user.ws.send(parsedData.message);
                 }
             });
         }
+
+        if(parsedData.type === "chat_user"){
+            users.forEach(user => {
+                if(user.userId === parsedData.receiverId){
+                    user.ws.send(parsedData.message);
+                }else{
+                    console.log("user is not here")
+                }
+                console.log(`user.userId ${user.userId}`)
+                console.log(`parseddata.receiverid ${parsedData.receiverId}`)
+            }) 
+        }
+
+        
     })
 })
