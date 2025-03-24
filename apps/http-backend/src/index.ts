@@ -84,13 +84,19 @@ app.post("/room", middleware, async(req, res)=>{
         })
         return;
     }
+
+    try {
+        await prisma.room.create({
+            data: {
+                slug : "12345",
+                adminId : "admin",
+            }
+        })
+    } catch (error) {
+        console.log("error is " + error);
+    }
     
-    const room = await prisma.room.create({
-        data: {
-            slug : "12345",
-            adminId : "admin",
-        }
-    })
+    
     res.send("create room")
 })
 
